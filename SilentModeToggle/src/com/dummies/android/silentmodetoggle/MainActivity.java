@@ -36,26 +36,27 @@ public class MainActivity extends Activity {
         mAudioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
         
         checkIfPhoneIsSilent();
+
         setButtonClickListener();
-        
     }
 
     
     private void checkIfPhoneIsSilent() {
     	int ringerMode = mAudioManager.getRingerMode();
-    	mPhoneIsSilent = (ringerMode == AudioManager.RINGER_MODE_SILENT);
-    	
+    	this.displayRingerState(ringerMode);    	
     }
     
-    private void toggleUi() {
+    private void setIconDisplay(int imageResource) {
     	ImageView imageView = (ImageView)findViewById(R.id.phone_icon);
-    	
-    	int drawableId = this.mPhoneIsSilent ? R.drawable.phone_silent : R.drawable.phone_on;
-    	
-    	Drawable newPhoneImage = getResources().getDrawable(drawableId);
-    	imageView.setImageDrawable(newPhoneImage);
-
+    	imageView.setImageResource(imageResource);
     }
+    
+    
+    private void displayRingerState(int ringerState) {
+    	int imageResource = (ringerState == AudioManager.RINGER_MODE_SILENT)  ? R.drawable.phone_silent : R.drawable.phone_on;
+    	setIconDisplay(imageResource);
+    }
+
     
     
     
@@ -69,13 +70,8 @@ public class MainActivity extends Activity {
 				
 		    	Log.i(LOG_TAG, "toggleButton click event fired");
 				
-				if (mPhoneIsSilent) {
-					mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-				} else {
-					mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-				}
-				mPhoneIsSilent = !mPhoneIsSilent;
-				toggleUi();
+		    	int newPhoneState = new AudioStateToggler(MainActivity.this).Toggle();
+		    	MainActivity.this.displayRingerState(newPhoneState);
 			}
         	
         });
@@ -94,7 +90,6 @@ public class MainActivity extends Activity {
     	Log.i("SilentModeToggle", "onResume is being called");
     	super.onResume();
     	checkIfPhoneIsSilent();
-    	toggleUi();
     }
     
     

@@ -25,11 +25,14 @@ public class AppWidget extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.i(LOG_TAG, "AppWidget.onReceive invoked");
-		if(intent.getAction() == null) {
+		String intentAction = intent.getAction();
+		if(intentAction == null) {
 			Log.i(LOG_TAG, "intent.getAction == null. Starting the toggleservice");
 			context.startService(new Intent(context, ToggleService.class));
 
 		} else {
+			String logMessage = "AppWidget.onReceive. intentAction = " + intentAction;
+			Log.i(LOG_TAG, logMessage);
 			super.onReceive(context, intent);
 		}
 	}
@@ -64,15 +67,12 @@ public class AppWidget extends AppWidgetProvider {
 														context.getPackageName(),
 														R.layout.widget
 													);
-			AudioManager audioManager = (AudioManager)context.getSystemService(Activity.AUDIO_SERVICE);
+			AudioStateToggler audioStateToggler = new AudioStateToggler(context);
+			int newAudioState = audioStateToggler.Toggle();
+			int resource = newAudioState == AudioManager.RINGER_MODE_SILENT ? R.drawable.phone_state_silent : R.drawable.phone_state_normal;
+			updateViews.setImageViewResource(R.id.phoneState, resource);
 			
-			if(audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
-				updateViews.setImageViewResource(R.id.phoneState, R.drawable.phone_state_normal);
-				audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-			} else {
-				updateViews.setImageViewResource(R.id.phoneState, R.drawable.phone_state_silent);
-				audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-			}
+			
 			Intent i = new Intent(this, AppWidget.class);
 			PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
 			updateViews.setOnClickPendingIntent(R.id.phoneState, pi);
