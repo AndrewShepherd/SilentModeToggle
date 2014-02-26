@@ -16,9 +16,18 @@ public class MainActivity extends Activity {
 
 	private AudioManager mAudioManager;
 	private boolean mPhoneIsSilent;
+	final static String LOG_TAG = "SilentModeToggle";
+
+	public MainActivity() {
+		super();
+    	Log.i(LOG_TAG, "MainActivity constructor invoked");
+	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+    	
+
+    	Log.i(LOG_TAG, "MainActivity.onCreate invoked");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
@@ -57,6 +66,9 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
+				
+		    	Log.i(LOG_TAG, "toggleButton click event fired");
+				
 				if (mPhoneIsSilent) {
 					mAudioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 				} else {

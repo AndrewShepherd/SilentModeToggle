@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="toggle_silent_mode">Toggle Silent Mode</string>
     <string name="icon_content_description">An icon of a vintage phone handset</string>
+    <string name="phone_widget_content_description">This is the phone widget content description</string>
 
 </resources>
